@@ -23,7 +23,8 @@ export default {
   mounted() {
     this.dropzone = new Dropzone(this.$refs.dropzone, {
       url: 'asdfsd',
-      autoProcessQueue: false
+      autoProcessQueue: false,
+      addRemoveLinks: true
     })
   },
   methods: {
@@ -31,9 +32,15 @@ export default {
       const form = new FormData();
 
       const images = this.dropzone.getAcceptedFiles();
-      images.forEach(image => form.append('imgs[]', image));
+      images.forEach(image => {
+        form.append('imgs[]', image)
+        this.dropzone.removeFile(image)
+      });
       form.append('title', this.title);
       form.append('content', this.content);
+
+      this.title = '';
+      this.content = '';
 
       axios.post('/api/posts', form)
     }
